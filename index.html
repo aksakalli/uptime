@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <title>Uptime Calculator</title>
+</head>
+
+<body>
+
+  <h1>Uptime Calculator</h1>
+  <p>
+    A service-level agreement (SLA) is a commitment between a service provider and a client.
+    The uptime percentage commitment will define the period of potential downtime/unavailability.
+  </p>
+
+  <div>
+    <label for="uptime-input">Enter uptime percentage:</label>
+    <input id="uptime-input" type="number" name="uptime-input" min="0" max="100" step="0.01" value="99.9">
+  </div>
+  <h3>Downtime result</h3>
+  <ul>
+    <li><strong>Daily: </strong><span id="daily"></span></li>
+    <li><strong>Weekly: </strong><span id="weekly"></span></li>
+    <li><strong>Monthly: </strong><span id="monthly"></span></li>
+    <li><strong>Yearly: </strong><span id="yearly"></span></li>
+  </ul>
+
+</body>
+<script>
+  function secondsToTime(seconds) {
+    seconds = Math.round(seconds);
+
+    minutes = Math.floor(seconds / 60);
+    seconds = seconds % 60;
+
+    hours = Math.floor(minutes / 60);
+    minutes = minutes % 60;
+
+    days = Math.floor(hours / 24);
+    hours = hours % 24;
+    return {
+      "d": days,
+      "h": hours,
+      "m": minutes,
+      "s": seconds
+    };
+  }
+
+  function formatSeconds(seconds) {
+    time = secondsToTime(seconds);
+    str = "";
+    if (time.d > 0) {
+      str += time.d + "d ";
+    }
+    if (time.h > 0) {
+      str += time.h + "h ";
+    }
+    if (time.m > 0) {
+      str += time.m + "m ";
+    }
+    if (time.s > 0) {
+      str += time.s + "s ";
+    }
+    return str;
+  }
+
+  var input = document.getElementById("uptime-input")
+  var updateResults = function () {
+    if (input.value < 0) {
+      input.value = 0
+    }
+    if (input.value > 100) {
+      input.value = 99.9
+    }
+    var percentage = input.value;
+    rate = (100 - percentage) / 100;
+    document.getElementById("daily").innerHTML = formatSeconds(86400 * rate);
+    document.getElementById("weekly").innerHTML = formatSeconds(604800 * rate);
+    document.getElementById("monthly").innerHTML = formatSeconds(2592000 * rate);
+    document.getElementById("yearly").innerHTML = formatSeconds(31536000 * rate);
+  };
+  input.onchange = updateResults;
+  updateResults();
+</script>
+
+</html>
